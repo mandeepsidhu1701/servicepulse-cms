@@ -1,0 +1,8 @@
+---
+Name: approutes
+After:
+  - '#rootroutes'
+---
+SilverStripe\Control\Director:
+  rules:
+    'api/service-requests//$Action': 'App\Controller\ServiceRequestController'
