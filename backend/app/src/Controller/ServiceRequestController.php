@@ -12,6 +12,7 @@ class ServiceRequestController extends Controller
     private static array $allowed_actions = [
         'submit',
         'list',
+        'updateStatus',
         'options',
     ];
 
@@ -78,6 +79,39 @@ class ServiceRequestController extends Controller
         }
 
         return $this->json($items);
+    }
+    public function updateStatus(HTTPRequest $request): HTTPResponse
+    {
+        if ($request->httpMethod() !== 'POST') {
+            return $this->json(['error' => 'Method not allowed'], 405);
+        }
+
+        $data = json_decode($request->getBody(), true);
+
+        if (!$data || empty($data['id']) || empty($data['status'])) {
+            return $this->json(['error' => 'id and status are required'], 422);
+        }
+
+        $allowedStatuses = ['New', 'Assigned', 'InProgress', 'Resolved', 'Closed'];
+
+        if (!in_array($data['status'], $allowedStatuses, true)) {
+            return $this->json(['error' => 'Invalid status'], 422);
+        }
+
+        $serviceRequest = ServiceRequest::get()->byID((int) $data['id']);
+
+        if (!$serviceRequest) {
+            return $this->json(['error' => 'Service request not found'], 404);
+        }
+
+        $serviceRequest->Status = $data['status'];
+        $serviceRequest->write();
+
+        return $this->json([
+            'message' => 'Status updated successfully',
+            'id' => $serviceRequest->ID,
+            'status' => $serviceRequest->Status,
+        ]);
     }
 
     public function options(HTTPRequest $request): HTTPResponse

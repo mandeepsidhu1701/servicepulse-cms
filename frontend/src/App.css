@@ -73,3 +73,32 @@ button:disabled {
   border-radius: 10px;
   margin-bottom: 16px;
 }
+
+.nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.request-list {
+  display: grid;
+  gap: 14px;
+}
+
+.request-card {
+  border: 1px solid #dce3ef;
+  border-radius: 12px;
+  padding: 16px;
+  background: #f9fbff;
+  display: grid;
+  gap: 6px;
+}
+
+.request-card span {
+  color: #555;
+  font-size: 14px;
+}
+
+.request-card small {
+  color: #777;
+}
