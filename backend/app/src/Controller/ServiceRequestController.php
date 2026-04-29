@@ -12,6 +12,7 @@ class ServiceRequestController extends Controller
     private static array $allowed_actions = [
         'submit',
         'list',
+        'options',
     ];
 
     public function submit(HTTPRequest $request): HTTPResponse
@@ -79,11 +80,28 @@ class ServiceRequestController extends Controller
         return $this->json($items);
     }
 
+    public function options(HTTPRequest $request): HTTPResponse
+    {
+        return $this->json([]);
+    }
+
     private function json(array $data, int $status = 200): HTTPResponse
     {
         return HTTPResponse::create(
             json_encode($data),
             $status
-        )->addHeader('Content-Type', 'application/json');
+        )->addHeader('Content-Type', 'application/json')
+        ->addHeader('Access-Control-Allow-Origin', 'http://localhost:5173')
+        ->addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        ->addHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    }
+
+    public function handleRequest(HTTPRequest $request): HTTPResponse
+    {
+        if ($request->httpMethod() === 'OPTIONS') {
+            return $this->json([]);
+        }
+
+        return parent::handleRequest($request);
     }
 }
