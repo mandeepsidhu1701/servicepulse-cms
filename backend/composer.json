@@ -10,7 +10,8 @@
         "silverstripe/recipe-cms": "~6.2.0@stable",
         "silverstripe/startup-theme": "~1.0.12@stable",
         "silverstripe/login-forms": "~6.2.0@stable",
-        "silverstripe/htmleditor-tinymce": "~1.1.0@stable"
+        "silverstripe/htmleditor-tinymce": "~1.1.0@stable",
+        "aws/aws-sdk-php": "^3.379"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.3"

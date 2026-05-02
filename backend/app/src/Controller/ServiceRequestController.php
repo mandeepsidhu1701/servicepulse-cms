@@ -6,7 +6,8 @@ use App\Model\ServiceRequest;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
-use App\Model\NotificationEvent;
+//use App\Model\NotificationEvent;
+use App\Service\SqsService;
 
 class ServiceRequestController extends Controller
 {
@@ -54,18 +55,30 @@ class ServiceRequestController extends Controller
         $serviceRequest->Status = 'New';
         $serviceRequest->write();
 
-        $event = NotificationEvent::create();
-        $event->EventType = 'ServiceRequestCreated';
-        $event->Payload = json_encode([
+        // $event = NotificationEvent::create();
+        // $event->EventType = 'ServiceRequestCreated';
+        // $event->Payload = json_encode([
+        //     'requestId' => $serviceRequest->ID,
+        //     'customerName' => $serviceRequest->CustomerName,
+        //     'customerEmail' => $serviceRequest->CustomerEmail,
+        //     'siteName' => $serviceRequest->SiteName,
+        //     'priority' => $serviceRequest->Priority,
+        // ]);
+        // $event->Status = 'Pending';
+        // $event->Attempts = 0;
+        // $event->write();
+
+        $sqs = new SqsService();
+
+        $sqs->sendMessage([
+            'eventType' => 'ServiceRequestCreated',
             'requestId' => $serviceRequest->ID,
             'customerName' => $serviceRequest->CustomerName,
             'customerEmail' => $serviceRequest->CustomerEmail,
             'siteName' => $serviceRequest->SiteName,
             'priority' => $serviceRequest->Priority,
+            'status' => $serviceRequest->Status,
         ]);
-        $event->Status = 'Pending';
-        $event->Attempts = 0;
-        $event->write();
 
         return $this->json([
             'message' => 'Service request created successfully',
